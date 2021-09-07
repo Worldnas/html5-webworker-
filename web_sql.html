@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>web_sql</title>
+<script>
+	var db=openDatabase("mydb","1.0","test DB",2 * 1024 * 1024);
+	var msg;
+	db.transaction(function(tx){
+		tx.excuteSql("CREAT TABLE IF NOT EXISTS LOGS (id unique, log)");
+		tx.excuteSql("INSERT INTO LOGS (id,log) VALUES(1,'foobar')");
+		tx.excuteSql("INSERT INTO LOGS (id,log) VALUES(2,'logmsg')");
+		msg = "<p>log message create and row inserted.</p>";
+		document.querySelector('#status').innerHTML=msg;
+	});
+	db.transaction(function(tx){
+		tx.excuteSql("SELECT * FROM LOGS",[],function(tx,result){
+			var len=result.rows.length,i;
+			msg="<p>Found rows: "+len+"</p>";
+			document.querySelector("#status").innerHTML+=msg;
+			for(i=0;i<len;i++){
+				msg="<p><b>"+results.rows.item(i).log+"</b></P>";
+				document.querySelector("#status").innerHTML+=msg;
+			}
+		},null);
+	})
+</script>
+</head>
+
+<body>
+<div id="status" name="status">status message</div>
+</body>
+</html>
